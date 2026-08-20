@@ -40,8 +40,12 @@ fetch_any() {
 }
 
 check_sha() {
-	[ -n "$2" ] || return 0                      # в манифесте суммы нет — пропускаем
-	command -v sha256sum >/dev/null 2>&1 || return 0
+	# fail-closed: без контрольной суммы или без инструмента проверки НЕ ставим (раньше молча пропускали).
+	[ -n "$2" ] || die "в манифесте нет контрольной суммы для $(basename "$1") — установка отменена"
+	if ! command -v sha256sum >/dev/null 2>&1; then
+		opkg update >/dev/null 2>&1; opkg install coreutils-sha256sum >/dev/null 2>&1
+		command -v sha256sum >/dev/null 2>&1 || die "нет sha256sum и не удалось его поставить — установка без проверки отменена"
+	fi
 	echo "$2  $1" | sha256sum -c - >/dev/null 2>&1
 }
 

@@ -3,4 +3,4 @@
 # Версия и контрольные суммы берутся отсюда, поэтому install.sh править при релизе не нужно.
 #
 # формат: архитектура|файл движка|sha256|файл агента|sha256|версия агента
-aarch64_cortex-a53|hirouter-core.ipk|3c41a570e0cfa2b28affa68f2db98336a672ec7ced0f9dc44c3b7a7edf4a3ab3|hirouter.ipk|3aec113e29324b736d7f492798f3ef1e01fdbccc273eea4a537612b3064f39a8|0.3.19
+aarch64_cortex-a53|hirouter-core.ipk|3c41a570e0cfa2b28affa68f2db98336a672ec7ced0f9dc44c3b7a7edf4a3ab3|hirouter.ipk|922969f2341fb2c10fc5eb24bc16dac7f4d10b50ee9dbcdfbcc8c7ab168586be|0.3.31

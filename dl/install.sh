@@ -88,10 +88,24 @@ rm -f /etc/hirouter/state.json
 
 # 5. установка
 opkg update >/dev/null 2>&1
+
+# Зависимости. На старых прошивках их часто нет, и без них агент не встаёт
+# (agent.ipk тянет curl/ca-bundle/luci-compat, ca-bundle нужен ещё и для HTTPS).
+# Ставим заранее: уже установленные opkg пропустит, недостающие доставит из фида.
+# На отдельном пакете не падаем — реальным гейтом будет установка самих пакетов ниже.
+say "проверяю зависимости"
+for dep in ca-bundle curl luci-compat; do
+	if opkg list-installed 2>/dev/null | grep -q "^$dep "; then
+		continue
+	fi
+	say "  ставлю $dep"
+	opkg install "$dep" >/dev/null 2>&1 || say "  $dep поставить не удалось — продолжаю (проверю на установке агента)"
+done
+
 say "ставлю движок"
 opkg install "$TMP/ss.ipk"    >/dev/null 2>&1 || die "не установился движок (проверьте место на флеше: df -h)"
 say "ставлю агента"
-opkg install "$TMP/agent.ipk" >/dev/null 2>&1 || die "не установился агент (возможно, не хватает зависимостей: opkg update && opkg install curl ca-bundle luci-compat)"
+opkg install "$TMP/agent.ipk" >/dev/null 2>&1 || die "не установился агент. Обычно это нехватка зависимостей или нет связи с фидом — выполните: opkg update && opkg install curl ca-bundle luci-compat, затем повторите установку."
 
 # 6. первый синк
 say "запрашиваю конфигурацию у панели"

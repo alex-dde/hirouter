@@ -100,6 +100,33 @@ opkg install /tmp/hirouter.ipk
 Порядок важен: сначала движок, потом агент.
 </details>
 
+<details>
+<summary>🪟 Установка с Windows</summary>
+
+Для установки удобнее всего использовать программу <a href="https://mobaxterm.mobatek.net/download.html" target="_blank" rel="noopener noreferrer">MobaXterm</a>.
+
+Запустите программу, в левом верхнем углу нажмите **«Session»**, выберите **«SSH»**, впишите IP своего роутера (обычно это либо `192.168.10.1`, либо `192.168.1.1`) в поле **«Remote host»**, затем впишите `root` в поле **«Username»** и нажмите **OK**.
+
+<img src="docs/img/win-1.png" alt="MobaXterm — новая SSH-сессия" width="820">
+
+Подтвердите:
+
+<img src="docs/img/win-2.png" alt="Подтверждение ключа сервера" width="820">
+
+Возможно, подключение произойдёт сразу. Если нет — слева дважды нажмите на ваш IP, и устройство подключится к роутеру.
+
+<img src="docs/img/win-3.png" alt="Список сессий в MobaXterm" width="820">
+
+Скопируйте команду установки (она выше) и нажмите **Enter**:
+
+<img src="docs/img/win-4.png" alt="Запуск команды установки в терминале" width="820">
+
+После установки программа напишет, что HiRouter установлен.
+
+Для активации тарифа свяжитесь с администратором через бота <a href="https://t.me/hirouter_bot" target="_blank" rel="noopener noreferrer">@hirouter_bot</a>.
+
+</details>
+
 Установка занимает **2–4 минуты**, из них около минуты — ожидание первого ответа панели.
 ⚠️ **Не перезагружайте роутер в процессе.**
 

@@ -89,17 +89,32 @@ rm -f /etc/hirouter/state.json
 # 5. установка
 opkg update >/dev/null 2>&1
 
-# Зависимости. На старых прошивках их часто нет, и без них агент не встаёт
+# Зависимости. На старых/минимальных прошивках их часто нет, и без них агент не встаёт
 # (agent.ipk тянет curl/ca-bundle/luci-compat, ca-bundle нужен ещё и для HTTPS).
-# Ставим заранее: уже установленные opkg пропустит, недостающие доставит из фида.
+# Фид OpenWrt в RU-сетях ЧАСТО флейкует — обрыв одного файла (wget err 4), особенно luci-фида,
+# где живёт luci-compat. Поэтому ставим с РЕТРАЯМИ: между попытками освежаем список пакетов —
+# транзиентный обрыв уходит на следующей попытке (проверено: со второго прогона встаёт).
 # На отдельном пакете не падаем — реальным гейтом будет установка самих пакетов ниже.
 say "проверяю зависимости"
+opkg update >/dev/null 2>&1
 for dep in ca-bundle curl luci-compat; do
 	if opkg list-installed 2>/dev/null | grep -q "^$dep "; then
 		continue
 	fi
-	say "  ставлю $dep"
-	opkg install "$dep" >/dev/null 2>&1 || say "  $dep поставить не удалось — продолжаю (проверю на установке агента)"
+	ok=""
+	for try in 1 2 3; do
+		if opkg install "$dep" >/dev/null 2>&1; then ok=1; break; fi
+		if [ "$try" -lt 3 ]; then say "  $dep: фид моргнул, повтор $try/3…"; opkg update >/dev/null 2>&1; fi
+	done
+	# Фолбэк МИМО фида — только если фид так и не отдал. Кладём лишь ca-bundle: он
+	# самодостаточный (arch all, deps=libc). luci-compat так нельзя — его дерево это 31
+	# арх-зависимый пакет (весь LuCI/lua-стек), в раздачу не вложить.
+	if [ -z "$ok" ] && [ "$dep" = "ca-bundle" ]; then
+		if fetch_any "ca-bundle.ipk" "$TMP/ca-bundle.ipk" >/dev/null; then
+			opkg install "$TMP/ca-bundle.ipk" >/dev/null 2>&1 && { ok=1; say "  ca-bundle: фид недоступен — поставил из раздачи"; }
+		fi
+	fi
+	[ -n "$ok" ] || say "  $dep не встал — продолжаю (проверю на установке агента)"
 done
 
 say "ставлю движок"

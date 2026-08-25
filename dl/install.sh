@@ -121,6 +121,17 @@ for dep in ca-bundle curl luci-compat kmod-nft-tproxy; do
 	[ -n "$ok" ] || say "  $dep не встал — продолжаю (проверю на установке агента)"
 done
 
+# Явная проверка ключевого модуля перехвата — отдельно и с видимым результатом. Без
+# kmod-nft-tproxy правило заворота nft молча не применяется → «интернет есть, а через VPN нет».
+# Не фатально: агент 0.3.41+ доустанавливает модуль сам при запуске, а панель показывает статус.
+if opkg list-installed 2>/dev/null | grep -q "^kmod-nft-tproxy "; then
+	say "  ✓ kmod-nft-tproxy на месте — перехват TPROXY будет работать"
+else
+	say "  ⚠ kmod-nft-tproxy НЕ установлен: без него VPN не заворачивает трафик."
+	say "    Агент попробует доустановить его сам; если не выйдет, вручную:"
+	say "    opkg update && opkg install kmod-nft-tproxy"
+fi
+
 say "ставлю движок"
 opkg install "$TMP/ss.ipk"    >/dev/null 2>&1 || die "не установился движок (проверьте место на флеше: df -h)"
 say "ставлю агента"

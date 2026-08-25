@@ -97,7 +97,11 @@ opkg update >/dev/null 2>&1
 # На отдельном пакете не падаем — реальным гейтом будет установка самих пакетов ниже.
 say "проверяю зависимости"
 opkg update >/dev/null 2>&1
-for dep in ca-bundle curl luci-compat; do
+# kmod-nft-tproxy — модуль ядра netfilter TPROXY. БЕЗ него clash-rules строит nft-правило
+# `... tproxy ip to 127.0.0.1:7894`, оно молча не применяется → трафик не заворачивается в
+# движок → «интернет есть, а через VPN — нет» (диагноз @sitzim: подтянулся с podkop и вылечил).
+# Вложить нельзя (арх-зависимый kmod), поэтому только с ретраями из фида.
+for dep in ca-bundle curl luci-compat kmod-nft-tproxy; do
 	if opkg list-installed 2>/dev/null | grep -q "^$dep "; then
 		continue
 	fi

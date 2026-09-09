@@ -1,13 +1,15 @@
 {
   "v": 1,
-  "panel": "https://hr.hyshub.com",
+  "panel": "https://api.hyshub.com",
   "backups": [
+    "https://printdoc.digital",
+    "https://clmain.inhelperpro.com",
+    "https://kimiriya.printdoc.digital",
+    "https://alex2.printdoc.digital",
+    "https://relay1.hyshub.com",
     "https://up.hirouter.info",
-    "https://sync.printdoc.digital",
-    "https://svc.inhelperpro.com",
-    "https://edge.printdoc.digital",
-    "https://api.hyshub.com"
+    "https://svc.inhelperpro.com"
   ],
-  "ts": 1787093614,
-  "sig": "UgSnGpWI/5I0hJIvYHtDjn2SuhP0sLCwl1SrGcPPswdMhgG9guHhYQwypon0cFyir2eRNcSu5uyxz75wq78bDw=="
+  "ts": 1788914847,
+  "sig": "dwMZLRfnm4iY7kkF/TDLf9A9G4SmpLeE3+ZBdcCGeSjQ+XhesKxt6XPvjVLp/My290/Gi1iHXY6JXyeujDtiBg=="
 }
